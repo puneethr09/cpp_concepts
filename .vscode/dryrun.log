@@ -1,0 +1,8 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/pi/repo_cpp_practice'
+g++ -c main.cpp
+g++ -c log.cpp
+g++ -c multithread.cpp
+g++ -Wall -Iincludes -lpthread main.o log.o multithread.o -o output
+make: Leaving directory '/home/pi/repo_cpp_practice'
+ 
