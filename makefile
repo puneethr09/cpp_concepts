@@ -1,16 +1,20 @@
+CXX = g++
+CXXFLAGS = -Wall -std=c++14 -Iincludes
+LDFLAGS = -lpthread
+
+all: output
+
 output: main.o log.o multithread.o
-	g++ -Wall -Iincludes -lpthread main.o log.o multithread.o -o output
+	$(CXX) $(CXXFLAGS) main.o log.o multithread.o $(LDFLAGS) -o output
 
 main.o: main.cpp
-	g++ -c main.cpp
- 
+	$(CXX) $(CXXFLAGS) -c main.cpp
+
 log.o: log.cpp
-	g++ -c log.cpp
+	$(CXX) $(CXXFLAGS) -c log.cpp
 
 multithread.o: multithread.cpp
-	g++ -c multithread.cpp
-
-includes = $(include/*.hpp)
+	$(CXX) $(CXXFLAGS) -c multithread.cpp
 
 clean:
-	rm *.o output
+	rm -f *.o output

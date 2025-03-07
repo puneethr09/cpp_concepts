@@ -4,9 +4,11 @@
 #include "include/multithread.hpp"
 #include <map>
 #include <vector>
-#include <memory>
+#include <memory> // Ensure this include is present
 #include <set>
 #include <list>
+#include <iostream> // Add this include for std::cout
+#include <utility>  // Add this include for std::move
 
 #define LOG3(x, y, z) std::cout << x << " " << y << " " << z << std::endl;
 
@@ -14,23 +16,23 @@ class pun
 {
 private:
     int a;
-    string str;
+    std::string str;
 
 public:
     pun()
     {
-        cout << "Default contructor called" << endl;
+        std::cout << "Default constructor called" << std::endl;
     }
-    pun(string s, int num)
+    pun(std::string s, int num)
     {
         str = s;
         a = num;
-        cout << "pun : Contructor called from " << s << " with value " << a << endl;
+        std::cout << "pun : Constructor called from " << s << " with value " << a << std::endl;
     }
 
     ~pun()
     {
-        cout << "pun : Destructor called" << endl;
+        std::cout << "pun : Destructor called" << std::endl;
     }
     void setNum(int n)
     {
@@ -42,12 +44,12 @@ public:
         return a;
     }
 
-    void setString(string s)
+    void setString(std::string s)
     {
         str = s;
     }
 
-    string getString() const
+    std::string getString() const
     {
         return str;
     }
@@ -77,24 +79,24 @@ void pointer()
     LOG("ptr = ", ptr);
     LOG("*ptr = ", *ptr);
 
-    int *ptr1 = move(ptr);
+    int *ptr1 = std::move(ptr); // Qualify std::move
     LOG("ptr = ", ptr);
     LOG("ptr1 = ", ptr1);
     LOG("*ptr1 = ", *ptr1);
-    cout << endl;
+    std::cout << std::endl;
     LOG3("unique pointer example", " starts", "here");
 
-    std::unique_ptr<int> p = std::make_unique<int>(15);
+    std::unique_ptr<int> p = std::make_unique<int>(15); // Ensure C++14 support
     LOG("*p= ", *p);
-    std::unique_ptr<int> p1 = move(p);
+    std::unique_ptr<int> p1 = std::move(p); // Qualify std::move
     LOG("*p1 = ", *p1);
     if (p == nullptr)
     {
-        cout << "p is null" << endl;
+        std::cout << "p is null" << std::endl;
     }
     if (p1 == nullptr)
     {
-        cout << "p1 is null" << endl;
+        std::cout << "p1 is null" << std::endl;
     }
 }
 
@@ -104,8 +106,8 @@ void UniqueP()
         uniquePtr<pun> p1(new pun("unique pointer", 20));
         p1->setString("Hello! Puneeth here");
         p1->setNum(10);
-        cout << p1->getString() << endl;
-        cout << p1->getNum() << endl;
+        std::cout << p1->getString() << std::endl;
+        std::cout << p1->getNum() << std::endl;
     }
 }
 
@@ -113,7 +115,7 @@ class map_str
 {
 
 public:
-    string s;
+    std::string s;
     int num;
 
 public:
@@ -126,10 +128,10 @@ public:
 
     ~map_str()
     {
-        cout << "map_str : Destr called of string " << s << endl;
+        std::cout << "map_str : Destr called of string " << s << std::endl;
     }
 
-    map_str(string str, int n)
+    map_str(std::string str, int n)
     {
         s = str;
         num = n;
@@ -155,109 +157,109 @@ public:
 void maps()
 {
 
-    cout << endl
-         << "-----------------CREATION-----------------" << endl;
+    std::cout << std::endl
+              << "-----------------CREATION-----------------" << std::endl;
     std::map<map_str, int> m;
     map_str m1("xyz", 1);
     map_str m2("def", 2);
     map_str m3("ghi", 3);
     map_str m4("kdb", 100);
     map_str m5;
-    shared_ptr<map_str> m6 = make_shared<map_str>("tuv", 11);
-    //map_str *m7 = new map_str("llp", 30);
+    std::shared_ptr<map_str> m6 = std::make_shared<map_str>("tuv", 11);
+    // map_str *m7 = new map_str("llp", 30);
 
-    cout << endl
-         << "-----------------INSERTION-----------------" << endl;
-    cout << "insert m1" << endl;
+    std::cout << std::endl
+              << "-----------------INSERTION-----------------" << std::endl;
+    std::cout << "insert m1" << std::endl;
     m[m1] = 1;
-    cout << "insert m2" << endl;
+    std::cout << "insert m2" << std::endl;
     m[m2] = 2;
-    cout << "insert m3" << endl;
+    std::cout << "insert m3" << std::endl;
     m[m3] = 3;
-    cout << "insert m4" << endl;
+    std::cout << "insert m4" << std::endl;
     m[m4] = 4;
-    cout << "insert m5" << endl;
+    std::cout << "insert m5" << std::endl;
     m[m5] = 98;
-    cout << "insert m6" << endl;
+    std::cout << "insert m6" << std::endl;
     m[*m6] = 123;
-    // cout<<"insert m7" << endl;
+    // std::cout<<"insert m7" << std::endl;
     // m[*m7] = 129;
 
-    cout << endl
-         << "-----------------DISPLAY-----------------" << endl;
+    std::cout << std::endl
+              << "-----------------DISPLAY-----------------" << std::endl;
     for (auto &itr : m)
     {
-        cout << "string " << itr.first.s << " ---- num " << itr.first.num << " ---- value " << itr.second << endl;
+        std::cout << "string " << itr.first.s << " ---- num " << itr.first.num << " ---- value " << itr.second << std::endl;
     }
 
-    cout << endl
-         << "-----------------COMPLETE-----------------" << endl;
+    std::cout << std::endl
+              << "-----------------COMPLETE-----------------" << std::endl;
 }
 
 void sets()
 {
 
-    cout << endl
-         << "-----------------SET CREATION-----------------" << endl;
+    std::cout << std::endl
+              << "-----------------SET CREATION-----------------" << std::endl;
     std::set<map_str> s;
     map_str m1("xyz", 1);
     map_str m2("def", 2);
     map_str m3("ghi", 3);
     map_str m4("kdb", 100);
     map_str m5;
-    shared_ptr<map_str> m6 = make_shared<map_str>("tuv", 11);
-    //map_str *m7 = new map_str("llp", 30);
+    std::shared_ptr<map_str> m6 = std::make_shared<map_str>("tuv", 11);
+    // map_str *m7 = new map_str("llp", 30);
 
-    cout << endl
-         << "-----------------INSERTION-----------------" << endl;
-    cout << "insert m1" << endl;
+    std::cout << std::endl
+              << "-----------------INSERTION-----------------" << std::endl;
+    std::cout << "insert m1" << std::endl;
     s.insert(m1);
-    cout << "insert m2" << endl;
+    std::cout << "insert m2" << std::endl;
     s.insert(m2);
-    cout << "insert m3" << endl;
+    std::cout << "insert m3" << std::endl;
     s.insert(m3);
-    cout << "insert m4" << endl;
+    std::cout << "insert m4" << std::endl;
     s.insert(m4);
-    cout << "insert m5" << endl;
+    std::cout << "insert m5" << std::endl;
     s.insert(m5);
-    cout << "insert m6" << endl;
+    std::cout << "insert m6" << std::endl;
     s.insert(*m6);
-    // cout<<"insert m7" << endl;
+    // std::cout<<"insert m7" << std::endl;
     // m[*m7] = 129;
 
-    cout << endl
-         << "-----------------DISPLAY-----------------" << endl;
+    std::cout << std::endl
+              << "-----------------DISPLAY-----------------" << std::endl;
     for (auto &itr : s)
     {
-        cout << "string " << itr.s << " ---- num " << itr.num << endl;
+        std::cout << "string " << itr.s << " ---- num " << itr.num << std::endl;
     }
 
-    cout << endl
-         << "-----------------COMPLETE-----------------" << endl;
+    std::cout << std::endl
+              << "-----------------COMPLETE-----------------" << std::endl;
 }
 
 void sharedP()
 {
-    cout << "sharedP called" << endl;
+    std::cout << "sharedP called" << std::endl;
     {
         shared_pointer<pun> sp(new pun("shared ptr", 10));
-        cout << "1) count is " << sp.getCount() << endl;
+        std::cout << "1) count is " << sp.getCount() << std::endl;
         {
             shared_pointer<pun> sp1 = sp;
-            cout << "2) count is " << sp1.getCount() << endl;
+            std::cout << "2) count is " << sp1.getCount() << std::endl;
         }
-        cout << "3) count is " << sp.getCount() << endl;
+        std::cout << "3) count is " << sp.getCount() << std::endl;
     }
-    cout << "sharedP done" << endl;
+    std::cout << "sharedP done" << std::endl;
 }
 
 void linkedList()
 {
-    cout << "linkedList start" << endl;
+    std::cout << "linkedList start" << std::endl;
     node *node1 = new node(10);
 
-    //  cout<< "node data is " << node1->getData() << endl;
-    //  cout<< "next ptr is " << node1->getNext() << endl;
+    //  std::cout<< "node data is " << node1->getData() << std::endl;
+    //  std::cout<< "next ptr is " << node1->getNext() << std::endl;
 
     node *head = node1;
     print(head);
@@ -295,27 +297,27 @@ void linkedList()
 void lists()
 {
 
-    cout << endl
-         << endl
-         << "STL lists example" << endl;
+    std::cout << std::endl
+              << std::endl
+              << "STL lists example" << std::endl;
 
     std::list<int> l;
     l.assign(4, 2);
     for (auto i : l)
     {
-        cout << i << " ";
+        std::cout << i << " ";
     }
-    cout << endl;
+    std::cout << std::endl;
 
     std::list<int>::iterator itr = l.begin();
-    advance(itr, 2);
+    std::advance(itr, 2);
     l.insert(itr, 5);
 
     for (auto i : l)
     {
-        cout << i << " ";
+        std::cout << i << " ";
     }
-    cout << endl;
+    std::cout << std::endl;
 }
 
 class Singleton
@@ -326,17 +328,17 @@ private:
     Singleton()
     {
         data = 10;
-        cout << "singleton constructor called with data " << data << endl;
+        std::cout << "singleton constructor called with data " << data << std::endl;
     }
 
 public:
     int data;
     static Singleton *getInstance()
     {
-        cout << "singleton getInstance called" << endl;
+        std::cout << "singleton getInstance called" << std::endl;
         if (ptr == NULL)
         {
-            cout << "singleton ptr creation ongoing" << endl;
+            std::cout << "singleton ptr creation ongoing" << std::endl;
             ptr = new Singleton();
         }
         ++count;
@@ -346,7 +348,7 @@ public:
     static void releaseInstance()
     {
         --count;
-        cout << "singleton releaseInstance called, current count is " << count << endl;
+        std::cout << "singleton releaseInstance called, current count is " << count << std::endl;
         if ((0 == count) && (NULL != ptr))
         {
             delete ptr;
@@ -356,7 +358,7 @@ public:
 
     ~Singleton()
     {
-        cout << "singleton destructor called" << endl;
+        std::cout << "singleton destructor called" << std::endl;
     }
 };
 
@@ -365,31 +367,31 @@ int Singleton::count = 0;
 
 int main()
 {
-    cout << endl
-         << endl;
-    cout << "STL vec example" << endl;
+    std::cout << std::endl
+              << std::endl;
+    std::cout << "STL vec example" << std::endl;
     stl_vec();
-    cout << endl
-         << endl
-         << endl;
-    cout << "smart pointers built-in example" << endl;
+    std::cout << std::endl
+              << std::endl
+              << std::endl;
+    std::cout << "smart pointers built-in example" << std::endl;
     pointer();
-    cout << endl
-         << endl
-         << endl;
-    cout << "smart pointers own example" << endl;
+    std::cout << std::endl
+              << std::endl
+              << std::endl;
+    std::cout << "smart pointers own example" << std::endl;
     UniqueP();
-    cout << endl
-         << endl;
+    std::cout << std::endl
+              << std::endl;
 
     {
         pun pu;
         pu.setString("Hello! Puneeth here from main");
         pu.setNum(-10);
-        cout << pu.getString() << endl;
-        cout << pu.getNum() << endl;
+        std::cout << pu.getString() << std::endl;
+        std::cout << pu.getNum() << std::endl;
     }
-    //maps start here
+    // maps start here
 
     maps();
     sets();
@@ -400,23 +402,23 @@ int main()
 
     lists();
 
-    cout << endl
-         << endl
-         << "Singleton implementation" << endl;
+    std::cout << std::endl
+              << std::endl
+              << "Singleton implementation" << std::endl;
 
     Singleton *p = Singleton::getInstance();
 
-    cout << "Singleton data is " << p->data << endl;
+    std::cout << "Singleton data is " << p->data << std::endl;
 
     Singleton *q = Singleton::getInstance();
 
     p->releaseInstance();
-    //cout << "count is " <<
+    // std::cout << "count is " <<
     q->releaseInstance();
-    //cin.get();
+    // std::cin.get();
 
-    cout << endl
-         << endl;
+    std::cout << std::endl
+              << std::endl;
 
     multithreaded();
 }
