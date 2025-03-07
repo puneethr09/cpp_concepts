@@ -55,28 +55,28 @@ bazel run //:output
 ```
 
 ## How Bazel Builds the Project
-When you run bazel `build //:output` Bazel does the following:
+When you run `bazel build //:output` Bazel does the following:
 
-- **Workspace Initialization:**
+- ***Workspace Initialization:***
 Bazel reads the WORKSPACE file to treat the current directory as a Bazel workspace.
 
-- **Target Analysis:**
+- ***Target Analysis:***
 It parses the BUILD file, creates a dependency graph, and identifies that the output binary target depends on the mylib library.
 
-- **Sandboxed Build Actions:**
+- ***Sandboxed Build Actions:***
 Bazel creates an isolated sandbox environment where it compiles source files using the specified compiler options (e.g., -Wall, -std=c++14, -I.).
 
 #### Compilation and Linking:
 
 - `log.cpp` and `multithread.cpp` are compiled as part of the `mylib cc_library` target.
-- main.cpp is compiled as part of the output cc_binary target.
-- Bazel links these object files together using the -lpthread flag as specified in the BUILD file.
+- `main.cpp` is compiled as part of the output `cc_binary` target.
+- Bazel links these object files together using the `-lpthread` flag as specified in the `BUILD` file.
 
 ##### Incremental Builds:
 Bazel only rebuilds parts of the project that have changed, making subsequent builds faster.
 
 - Running the Binary:
-When you run bazel run //:output, Bazel ensures that the targets are up-to-date then executes the built binary.
+When you run `bazel run //:output`, Bazel ensures that the targets are up-to-date then executes the built binary.
 
 ## License
 This project is provided as-is without any warranty. Use and modify it according to your needs.
