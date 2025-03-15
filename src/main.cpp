@@ -2,6 +2,7 @@
 #include "include/pointers.hpp"
 #include "include/stl.hpp"
 #include "include/multithread.hpp"
+#include "include/FactoryPattern.hpp"
 #include <map>
 #include <vector>
 #include <memory> // Ensure this include is present
@@ -367,58 +368,69 @@ int Singleton::count = 0;
 
 int main()
 {
-    std::cout << std::endl
-              << std::endl;
-    std::cout << "STL vec example" << std::endl;
-    stl_vec();
-    std::cout << std::endl
-              << std::endl
-              << std::endl;
-    std::cout << "smart pointers built-in example" << std::endl;
-    pointer();
-    std::cout << std::endl
-              << std::endl
-              << std::endl;
-    std::cout << "smart pointers own example" << std::endl;
-    UniqueP();
-    std::cout << std::endl
-              << std::endl;
+    // std::cout << std::endl
+    //           << std::endl;
+    // std::cout << "STL vec example" << std::endl;
+    // stl_vec();
+    // std::cout << std::endl
+    //           << std::endl
+    //           << std::endl;
+    // std::cout << "smart pointers built-in example" << std::endl;
+    // pointer();
+    // std::cout << std::endl
+    //           << std::endl
+    //           << std::endl;
+    // std::cout << "smart pointers own example" << std::endl;
+    // UniqueP();
+    // std::cout << std::endl
+    //           << std::endl;
 
-    {
-        pun pu;
-        pu.setString("Hello! Puneeth here from main");
-        pu.setNum(-10);
-        std::cout << pu.getString() << std::endl;
-        std::cout << pu.getNum() << std::endl;
-    }
-    // maps start here
+    // {
+    //     pun pu;
+    //     pu.setString("Hello! Puneeth here from main");
+    //     pu.setNum(-10);
+    //     std::cout << pu.getString() << std::endl;
+    //     std::cout << pu.getNum() << std::endl;
+    // }
+    // // maps start here
 
-    maps();
-    sets();
+    // maps();
+    // sets();
 
-    sharedP();
+    // sharedP();
 
-    linkedList();
+    // linkedList();
 
-    lists();
+    // lists();
 
-    std::cout << std::endl
-              << std::endl
-              << "Singleton implementation" << std::endl;
+    // std::cout << std::endl
+    //           << std::endl
+    //           << "Singleton implementation" << std::endl;
 
-    Singleton *p = Singleton::getInstance();
+    // Singleton *p = Singleton::getInstance();
 
-    std::cout << "Singleton data is " << p->data << std::endl;
+    // std::cout << "Singleton data is " << p->data << std::endl;
 
-    Singleton *q = Singleton::getInstance();
+    // Singleton *q = Singleton::getInstance();
 
-    p->releaseInstance();
-    // std::cout << "count is " <<
-    q->releaseInstance();
-    // std::cin.get();
+    // p->releaseInstance();
+    // // std::cout << "count is " <<
+    // q->releaseInstance();
+    // // std::cin.get();
 
-    std::cout << std::endl
-              << std::endl;
+    // std::cout << std::endl
+    //           << std::endl;
 
-    multithreaded();
+    // multithreaded();
+
+    FactoryA factoryA;
+    FactoryB factoryB;
+
+    auto productA = factoryA.createProduct();
+    auto productB = factoryB.createProduct();
+
+    productA->print();
+    productB->print();
+
+    return 0;
 }

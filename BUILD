@@ -2,8 +2,8 @@
 cc_library(
     name = "mylib",
     srcs = [
-        "log.cpp",
-        "multithread.cpp",
+        "src/log.cpp",
+        "src/multithread.cpp",
     ],
     hdrs = glob(["include/*.hpp"]),
     copts = [
@@ -15,7 +15,7 @@ cc_library(
 
 cc_binary(
     name = "output",
-    srcs = ["main.cpp"],
+    srcs = ["src/main.cpp"],
     deps = [":mylib"],
     linkopts = [
         "-lpthread",

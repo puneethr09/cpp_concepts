@@ -7,14 +7,14 @@ all: output
 output: main.o log.o multithread.o
 	$(CXX) $(CXXFLAGS) main.o log.o multithread.o $(LDFLAGS) -o output
 
-main.o: main.cpp
-	$(CXX) $(CXXFLAGS) -c main.cpp
+main.o: src/main.cpp
+	$(CXX) $(CXXFLAGS) -c src/main.cpp
 
-log.o: log.cpp
-	$(CXX) $(CXXFLAGS) -c log.cpp
+log.o: src/log.cpp
+	$(CXX) $(CXXFLAGS) -c src/log.cpp
 
-multithread.o: multithread.cpp
-	$(CXX) $(CXXFLAGS) -c multithread.cpp
+multithread.o: src/multithread.cpp
+	$(CXX) $(CXXFLAGS) -c src/multithread.cpp
 
 clean:
 	rm -f *.o output
