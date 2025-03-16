@@ -2,7 +2,10 @@
 #include "include/pointers.hpp"
 #include "include/stl.hpp"
 #include "include/multithread.hpp"
-#include "include/FactoryPattern.hpp"
+#include "include/creationalPatterns/factoryPattern.hpp"
+#include "include/creationalPatterns/singletonPattern.hpp"
+#include "include/creationalPatterns/prototypePattern.hpp"
+#include "include/creationalPatterns/abstractFactory.hpp"
 #include <map>
 #include <vector>
 #include <memory> // Ensure this include is present
@@ -321,70 +324,18 @@ void lists()
     std::cout << std::endl;
 }
 
-class Singleton
-{
-private:
-    static Singleton *ptr;
-    static int count;
-    Singleton()
-    {
-        data = 10;
-        std::cout << "singleton constructor called with data " << data << std::endl;
-    }
-
-public:
-    int data;
-    static Singleton *getInstance()
-    {
-        std::cout << "singleton getInstance called" << std::endl;
-        if (ptr == NULL)
-        {
-            std::cout << "singleton ptr creation ongoing" << std::endl;
-            ptr = new Singleton();
-        }
-        ++count;
-        return ptr;
-    }
-
-    static void releaseInstance()
-    {
-        --count;
-        std::cout << "singleton releaseInstance called, current count is " << count << std::endl;
-        if ((0 == count) && (NULL != ptr))
-        {
-            delete ptr;
-            ptr = NULL;
-        }
-    }
-
-    ~Singleton()
-    {
-        std::cout << "singleton destructor called" << std::endl;
-    }
-};
-
-Singleton *Singleton::ptr = 0;
-int Singleton::count = 0;
-
 int main()
 {
-    // std::cout << std::endl
-    //           << std::endl;
     // std::cout << "STL vec example" << std::endl;
     // stl_vec();
-    // std::cout << std::endl
-    //           << std::endl
-    //           << std::endl;
+
     // std::cout << "smart pointers built-in example" << std::endl;
     // pointer();
-    // std::cout << std::endl
-    //           << std::endl
-    //           << std::endl;
+
     // std::cout << "smart pointers own example" << std::endl;
     // UniqueP();
-    // std::cout << std::endl
-    //           << std::endl;
 
+    // block to test pun class
     // {
     //     pun pu;
     //     pu.setString("Hello! Puneeth here from main");
@@ -392,45 +343,74 @@ int main()
     //     std::cout << pu.getString() << std::endl;
     //     std::cout << pu.getNum() << std::endl;
     // }
-    // // maps start here
 
+    // maps start here
     // maps();
+
+    // sets start here
     // sets();
 
+    // shared pointers
     // sharedP();
 
+    // linked list
     // linkedList();
 
+    // lists
     // lists();
 
-    // std::cout << std::endl
-    //           << std::endl
-    //           << "Singleton implementation" << std::endl;
-
+    // Singleton example
     // Singleton *p = Singleton::getInstance();
-
     // std::cout << "Singleton data is " << p->data << std::endl;
-
     // Singleton *q = Singleton::getInstance();
-
     // p->releaseInstance();
     // // std::cout << "count is " <<
     // q->releaseInstance();
     // // std::cin.get();
 
-    // std::cout << std::endl
-    //           << std::endl;
-
+    // multithreaded example
     // multithreaded();
 
-    FactoryA factoryA;
-    FactoryB factoryB;
+    // factory pattern example
+    // std::string fileType = "Word"; // Simulated user input
+    // // Create document dynamically
+    // std::unique_ptr<Document> doc = DocumentFactory::createDocument(fileType);
+    // if (doc)
+    // {
+    //     doc->open();
+    //     doc->save();
+    // }
+    // else
+    // {
+    //     std::cout << "Invalid document type!" << std::endl;
+    // }
 
-    auto productA = factoryA.createProduct();
-    auto productB = factoryB.createProduct();
+    // prototype pattern example
+    // auto warrior1 = std::make_unique<Warrior>("Sword", 100);
+    // auto mage1 = std::make_unique<Mage>("Fireball", 150);
+    // warrior1->showCharacter();
+    // mage1->showCharacter();
+    // cout << "address of warrior1 is " << warrior1.get() << endl;
+    // cout << "address of mage1 is " << mage1.get() << endl;
+    // // Cloning characters
+    // auto warrior2 = warrior1->clone();
+    // auto mage2 = mage1->clone();
+    // cout << "address of warrior2 is " << warrior2.get() << endl;
+    // cout << "address of mage2 is " << mage2.get() << endl;
+    // warrior2->showCharacter();
+    // mage2->showCharacter();
 
-    productA->print();
-    productB->print();
+    // abstract factory pattern example
+    auto car = CarProvider::createCarFactory("sedan");
+    if (car)
+    {
+        auto engine = car->createEngine();
+        auto wheels = car->createWheels();
+        auto body = car->createBody();
+        engine->display();
+        wheels->display();
+        body->display();
+    }
 
     return 0;
 }

@@ -2,3 +2,4 @@
 output
 Module*
 bazel*
+.vscode

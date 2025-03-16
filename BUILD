@@ -5,8 +5,7 @@ cc_library(
         "src/log.cpp",
         "src/multithread.cpp",
     ],
-    hdrs = glob(["include/*.hpp"]),
-    copts = [
+    hdrs = glob(["include/*.hpp", "include/**/*.hpp"]),    copts = [
         "-Wall",
         "-std=c++14",
         "-I.",  # Now the include folder (./include) is accessible.
