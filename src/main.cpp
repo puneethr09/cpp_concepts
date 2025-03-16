@@ -401,16 +401,16 @@ int main()
     // mage2->showCharacter();
 
     // abstract factory pattern example
-    auto car = CarProvider::createCarFactory("sedan");
-    if (car)
-    {
-        auto engine = car->createEngine();
-        auto wheels = car->createWheels();
-        auto body = car->createBody();
-        engine->display();
-        wheels->display();
-        body->display();
-    }
+    // auto car = CarProvider::createCarFactory("sedan");
+    // if (car)
+    // {
+    //     auto engine = car->createEngine();
+    //     auto wheels = car->createWheels();
+    //     auto body = car->createBody();
+    //     engine->display();
+    //     wheels->display();
+    //     body->display();
+    // }
 
     return 0;
 }
