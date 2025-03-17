@@ -6,6 +6,7 @@
 #include "include/creationalPatterns/singletonPattern.hpp"
 #include "include/creationalPatterns/prototypePattern.hpp"
 #include "include/creationalPatterns/abstractFactory.hpp"
+#include "include/creationalPatterns/builderPattern.hpp"
 #include <map>
 #include <vector>
 #include <memory> // Ensure this include is present
@@ -411,6 +412,25 @@ int main()
     //     wheels->display();
     //     body->display();
     // }
+
+    // builder pattern example
+    BurgerBuilder burgerBuilder;
+    Burger burger = burgerBuilder.addBread("Wheat")
+                        .addMeat("Chicken")
+                        .addCheese("Swiss")
+                        .addSauce("Mayo")
+                        .addVeggies("Lettuce")
+                        .build();
+    burger.display();
+
+    // BurgerBuilder burgerBuilder1;
+    Burger burger1 = burgerBuilder.addBread("White")
+                         .addMeat("Beef")
+                         .addCheese("American")
+                         .addSauce("Mustard")
+                         .addVeggies("Tomato")
+                         .build();
+    burger1.display();
 
     return 0;
 }
