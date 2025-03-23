@@ -360,14 +360,15 @@ int main()
     // lists
     // lists();
 
-    // Singleton example
-    // Singleton *p = Singleton::getInstance();
-    // std::cout << "Singleton data is " << p->data << std::endl;
-    // Singleton *q = Singleton::getInstance();
-    // p->releaseInstance();
-    // // std::cout << "count is " <<
-    // q->releaseInstance();
-    // // std::cin.get();
+    // Singleton example as a shared pointer
+    auto p = Singleton::getInstance();
+    std::cout << "Singleton data is " << p->getData() << std::endl;
+
+    {
+        auto q = Singleton::getInstance();
+        std::cout << "Current shared count: " << q.use_count() << std::endl;
+    }
+    std::cout << "Shared count after q goes out of scope: " << p.use_count() << std::endl;
 
     // multithreaded example
     // multithreaded();
@@ -414,23 +415,21 @@ int main()
     // }
 
     // builder pattern example
-    BurgerBuilder burgerBuilder;
-    Burger burger = burgerBuilder.addBread("Wheat")
-                        .addMeat("Chicken")
-                        .addCheese("Swiss")
-                        .addSauce("Mayo")
-                        .addVeggies("Lettuce")
-                        .build();
-    burger.display();
-
-    // BurgerBuilder burgerBuilder1;
-    Burger burger1 = burgerBuilder.addBread("White")
-                         .addMeat("Beef")
-                         .addCheese("American")
-                         .addSauce("Mustard")
-                         .addVeggies("Tomato")
-                         .build();
-    burger1.display();
+    // BurgerBuilder burgerBuilder;
+    // Burger burger = burgerBuilder.addBread("Wheat")
+    //                     .addMeat("Chicken")
+    //                     .addCheese("Swiss")
+    //                     .addSauce("Mayo")
+    //                     .addVeggies("Lettuce")
+    //                     .build();
+    // burger.display();
+    // Burger burger1 = burgerBuilder.addBread("White")
+    //                      .addMeat("Beef")
+    //                      .addCheese("American")
+    //                      .addSauce("Mustard")
+    //                      .addVeggies("Tomato")
+    //                      .build();
+    // burger1.display();
 
     return 0;
 }

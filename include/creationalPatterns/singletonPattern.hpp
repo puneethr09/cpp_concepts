@@ -1,46 +1,47 @@
 #include <iostream>
-#include <string>
+#include <memory>
+#include <mutex>
+
 class Singleton
 {
 private:
-    static Singleton *ptr;
-    static int count;
+    int data;
     Singleton()
     {
         data = 10;
         std::cout << "singleton constructor called with data " << data << std::endl;
     }
-
-public:
-    int data;
-    static Singleton *getInstance()
-    {
-        std::cout << "singleton getInstance called" << std::endl;
-        if (ptr == NULL)
-        {
-            std::cout << "singleton ptr creation ongoing" << std::endl;
-            ptr = new Singleton();
-        }
-        ++count;
-        return ptr;
-    }
-
-    static void releaseInstance()
-    {
-        --count;
-        std::cout << "singleton releaseInstance called, current count is " << count << std::endl;
-        if ((0 == count) && (NULL != ptr))
-        {
-            delete ptr;
-            ptr = NULL;
-        }
-    }
-
     ~Singleton()
     {
         std::cout << "singleton destructor called" << std::endl;
     }
+    Singleton(const Singleton &) = delete;
+    Singleton &operator=(const Singleton &) = delete;
+
+    static std::weak_ptr<Singleton> instance;
+    static std::mutex mtx;
+
+public:
+    int getData() const { return data; }
+
+    static std::shared_ptr<Singleton> getInstance()
+    {
+        std::lock_guard<std::mutex> lock(mtx);
+        std::shared_ptr<Singleton> sharedInstance = instance.lock();
+        if (!sharedInstance)
+        {
+            std::cout << "Creating Singleton instance using shared pointer." << std::endl;
+            sharedInstance = std::shared_ptr<Singleton>(new Singleton(), [](Singleton *ptr)
+                                                        { delete ptr; });
+            instance = sharedInstance;
+        }
+        else
+        {
+            std::cout << "Returning existing Singleton instance." << std::endl;
+        }
+        return sharedInstance;
+    }
 };
 
-Singleton *Singleton::ptr = 0;
-int Singleton::count = 0;
+std::weak_ptr<Singleton> Singleton::instance;
+std::mutex Singleton::mtx;
