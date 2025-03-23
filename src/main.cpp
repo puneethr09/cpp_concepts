@@ -15,51 +15,6 @@
 #include <iostream> // Add this include for std::cout
 #include <utility>  // Add this include for std::move
 
-#define LOG3(x, y, z) std::cout << x << " " << y << " " << z << std::endl;
-
-class pun
-{
-private:
-    int a;
-    std::string str;
-
-public:
-    pun()
-    {
-        std::cout << "Default constructor called" << std::endl;
-    }
-    pun(std::string s, int num)
-    {
-        str = s;
-        a = num;
-        std::cout << "pun : Constructor called from " << s << " with value " << a << std::endl;
-    }
-
-    ~pun()
-    {
-        std::cout << "pun : Destructor called" << std::endl;
-    }
-    void setNum(int n)
-    {
-        a = n;
-    }
-
-    int getNum() const
-    {
-        return a;
-    }
-
-    void setString(std::string s)
-    {
-        str = s;
-    }
-
-    std::string getString() const
-    {
-        return str;
-    }
-};
-
 void stl_vec()
 {
     int v[] = {0, 1, 2, 3, 4, 5, 6, 7, 100, 200};
@@ -115,49 +70,6 @@ void UniqueP()
         std::cout << p1->getNum() << std::endl;
     }
 }
-
-class map_str
-{
-
-public:
-    std::string s;
-    int num;
-
-public:
-    map_str()
-    {
-        s = "default";
-        num = -1;
-        LOG3(" map_str : default constr with", s, num);
-    }
-
-    ~map_str()
-    {
-        std::cout << "map_str : Destr called of string " << s << std::endl;
-    }
-
-    map_str(std::string str, int n)
-    {
-        s = str;
-        num = n;
-        LOG3("param constr with", s, n);
-    }
-
-    map_str(const map_str &other)
-    {
-        s = other.s;
-        num = other.num;
-        LOG3("copy constr with", s, num);
-    }
-
-    bool operator<(const map_str &rhs) const
-    {
-        if (s == rhs.s)
-            return num < rhs.num;
-        else
-            return s < rhs.s;
-    }
-};
 
 void maps()
 {
@@ -361,14 +273,14 @@ int main()
     // lists();
 
     // Singleton example as a shared pointer
-    auto p = Singleton::getInstance();
-    std::cout << "Singleton data is " << p->getData() << std::endl;
+    // auto p = Singleton::getInstance();
+    // std::cout << "Singleton data is " << p->getData() << std::endl;
 
-    {
-        auto q = Singleton::getInstance();
-        std::cout << "Current shared count: " << q.use_count() << std::endl;
-    }
-    std::cout << "Shared count after q goes out of scope: " << p.use_count() << std::endl;
+    // {
+    //     auto q = Singleton::getInstance();
+    //     std::cout << "Current shared count: " << q.use_count() << std::endl;
+    // }
+    // std::cout << "Shared count after q goes out of scope: " << p.use_count() << std::endl;
 
     // multithreaded example
     // multithreaded();
