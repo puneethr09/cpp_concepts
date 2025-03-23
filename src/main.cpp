@@ -1,12 +1,13 @@
-#include "include/log.hpp"
-#include "include/pointers.hpp"
-#include "include/stl.hpp"
-#include "include/multithread.hpp"
-#include "include/creationalPatterns/factoryPattern.hpp"
-#include "include/creationalPatterns/singletonPattern.hpp"
-#include "include/creationalPatterns/prototypePattern.hpp"
-#include "include/creationalPatterns/abstractFactory.hpp"
-#include "include/creationalPatterns/builderPattern.hpp"
+//can be added with just starting from include., but vscode complains, so the full path is given
+#include "../include/log.hpp"
+#include "../include/pointers.hpp"
+#include "../include/stl.hpp"
+#include "../include/multithread.hpp"
+#include "../include/creationalPatterns/factoryPattern.hpp"
+#include "../include/creationalPatterns/singletonPattern.hpp"
+#include "../include/creationalPatterns/prototypePattern.hpp"
+#include "../include/creationalPatterns/abstractFactory.hpp"
+#include "../include/creationalPatterns/builderPattern.hpp"
 #include <map>
 #include <vector>
 #include <memory> // Ensure this include is present
