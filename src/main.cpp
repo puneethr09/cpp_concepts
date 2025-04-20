@@ -1,4 +1,4 @@
-//can be added with just starting from include., but vscode complains, so the full path is given
+// can be added with just starting from include., but vscode complains, so the full path is given
 #include "../include/log.hpp"
 #include "../include/pointers.hpp"
 #include "../include/stl.hpp"
@@ -68,7 +68,8 @@ void UniqueP()
         p1->setString("Hello! Puneeth here");
         p1->setNum(10);
         std::cout << p1->getString() << std::endl;
-        std::cout << p1->getNum() << std::endl;
+        std::cout << p1->getNum() << std::endl
+                  << std::endl;
     }
 }
 
@@ -316,16 +317,16 @@ int main()
     // mage2->showCharacter();
 
     // abstract factory pattern example
-    // auto car = CarProvider::createCarFactory("sedan");
-    // if (car)
-    // {
-    //     auto engine = car->createEngine();
-    //     auto wheels = car->createWheels();
-    //     auto body = car->createBody();
-    //     engine->display();
-    //     wheels->display();
-    //     body->display();
-    // }
+    auto car = CarProvider::createCarFactory("sedan");
+    if (car)
+    {
+        auto engine = car->createEngine();
+        auto wheels = car->createWheels();
+        auto body = car->createBody();
+        engine->display();
+        wheels->display();
+        body->display();
+    }
 
     // builder pattern example
     // BurgerBuilder burgerBuilder;

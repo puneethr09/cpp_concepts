@@ -7,36 +7,38 @@ template <typename T>
 class uniquePtr
 {
 private:
+    // Pointer to store the pointer passed to the unique pointer. This is made private to ensure that the pointer is not accessed directly.
     T *ptr;
 
 public:
+    // Default constructor is deleted, this is to ensure that the unique pointer is not created without a pointer.
     uniquePtr() = delete;
 
+    // Constructor to initialize the unique pointer with a pointer. This is the main constructor.
     uniquePtr(T *p)
     {
         ptr = p;
     }
 
-    uniquePtr(T &p)
-    {
-        ptr = p;
-    }
-
+    // Copy constructor is deleted, this is to ensure that the unique pointer is not copied, this is the main feature of unique pointer.
     uniquePtr(const uniquePtr<T> &p) = delete;
 
+    // Destructor to delete the pointer when the unique pointer goes out of scope.
     ~uniquePtr()
     {
         delete ptr;
     }
 
+    // Overloading the -> operator to access the pointer. This is similar to the normal pointer.
     T *operator->()
     {
         return ptr;
     }
 
+    // Overloading the * operator to access the value of the pointer. This is similar to the normal pointer.
     T *operator*()
     {
-        return &ptr;
+        return ptr;
     }
 };
 
