@@ -37,3 +37,13 @@ cc_test(
     ],
     copts = ["-std=c++20"],
 )
+
+cc_test(
+    name = "system_design_test",
+    srcs = ["system_design_test.cpp"],
+    deps = [
+        "//:mylib",
+        "@googletest//:gtest_main",
+    ],
+    copts = ["-std=c++20"],
+)

@@ -197,3 +197,31 @@ Define a family of algorithms and make them interchangeable at runtime.
     *   You don't want one giant `if-else` within your map code.
 *   **The Solution**: Create an interface `RouteStrategy`. Pass the specific strategy object to the context. The context just calls `strategy->calculate()`. It doesn't care *how* it's done.
 *   **Common Use Case**: Payment Processing (CreditCard / PayPal), or Sorting Algorithms (using QuickSort for large data vs InsertionSort for small data).
+
+# Part III: System Design Components
+*Focus: Combining data structures to build complex systems.*
+
+## 1. LRU Cache (Least Recently Used)
+**Goal**: "Keep the most important data, throw away the rest."
+A fixed-size cache that evicts the least recently accessed item when full.
+*   **The Problem**: Reading from Disk/Network is slow. You want to keep frequently accessed data in RAM. RAM is limited. Which item do you delete when you are full? The one nobody used for the longest time.
+*   **The Architecture**:
+    *   **Doubly Linked List (`std::list`)**: Main storage. Used for O(1) insertion at front (MRU) and O(1) eviction from back (LRU).
+    *   **Hash Map (`std::unordered_map`)**: Index. Used for O(1) lookup. Maps Key -> List Iterator.
+*   **The Logic**:
+    *   **Get(Key)**: Look up map. If found, move list node to front (Mark as Used). Return value.
+    *   **Put(Key, Val)**: Look up map. If new, add to front. If full, delete last list node and remove from map.
+*   **Common Use Case**: Browser History, CPU Caches, CDN Content Caching.
+
+## 2. Thread Pool
+**Goal**: "Reuse workers, don't fire and hire."
+Execute many tasks using a fixed number of reusable threads.
+*   **The Problem**: Creating a thread (`std::thread t`) is heavy (OS system call). If you create a new thread for every HTTP request, your server will freeze.
+*   **The Architecture**:
+    *   **Workers**: A `vector` of threads that are in an infinite loop: `while(true) { wait_for_task(); task(); }`.
+    *   **Task Queue**: A `queue` of `std::function<void()>` (job descriptions).
+    *   **Synchronization**:
+        *   `std::mutex`: Protects the queue (only one worker grabs a task at a time).
+        *   `std::condition_variable`: Workers sleep when queue is empty (save CPU) and wake up when `enqueue` calls `notify()`.
+*   **Common Use Case**: Web Servers (Nginx/Apache), Database Connection Handling, Background Processing.
+
