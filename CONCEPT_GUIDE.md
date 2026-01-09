@@ -225,3 +225,39 @@ Execute many tasks using a fixed number of reusable threads.
         *   `std::condition_variable`: Workers sleep when queue is empty (save CPU) and wake up when `enqueue` calls `notify()`.
 *   **Common Use Case**: Web Servers (Nginx/Apache), Database Connection Handling, Background Processing.
 
+# Part IV: Advanced Memory & Hardware
+*Focus: What actually happens in the RAM and CPU.*
+
+## 1. Process Memory Layout
+When your executable runs, the OS gives it a "Virtual Address Space". It is divided into segments:
+1.  **Text Segment**: Your code (instructions). Read-Only.
+2.  **Data Segment**: Global/Static variables initialized to non-zero.
+3.  **BSS Segment**: Global/Static variables uninitialized (or zero).
+4.  **Heap**: Grows Down (usually). dynamic memory (`new`, `malloc`). Managed by you.
+5.  **Stack**: Grows Up (usually). Local variables, return addresses. Managed by CPU/OS.
+
+## 2. Stack vs Heap (The Deep Mechanics)
+*   **The Stack**:
+    *   **Allocation**: Moving a pointer record (Stack Pointer, SP). `SP -= 4 bytes`. That's it. It takes **1 CPU cycle**.
+    *   **Deallocation**: `SP += 4 bytes`. Instant.
+    *   **Locality**: Hot. The top of the stack is always in L1 Cache.
+*   **The Heap**:
+    *   **Allocation**: Complex. The "Allocator" (malloc) must scan a Free List to find a block of suitable size. Can take **hundreds of cycles**.
+    *   **Fragmentation**: After many `new` and `delete`, the heap has Swiss-cheese holes. You might have 1GB free, but no continuous 100MB block.
+    *   **Thread Safety**: `malloc` uses a lock (mutex). Multiple threads calling `new` contend for this lock.
+
+## 3. Virtual Memory & Paging
+*   **The Illusion**: Your program thinks it has 4GB of contiguous RAM starting at `0x0000`.
+*   **The Reality**: Memory is fragmented across physical RAM sticks.
+*   **The MMU (Memory Management Unit)**: Hardware that translates `Virtual Address -> Physical Address` on every access.
+*   **Page Fault**: When you touch address `0x1000` but it's not in RAM (maybe on Disk/Swap). The CPU pauses your thread, OS fetches page from disk, and resumes. **Extremely Slow** (milliseconds).
+
+## 4. Cache Locality & Alignment
+*   **Cache Lines**: CPU reads RAM in chunks (usually 64 bytes), not single bytes.
+    *   **Contiguity**: `std::vector` stores `[Int, Int, Int]`. One fetch brings all 3.
+    *   **Scattering**: `std::list` stores `[Node]-> [Node]`. Each node might be on a different page. 1000 items = 1000 memory fetches.
+*   **False Sharing**: Two threads writing to different variables (`A` and `B`) that happen to sit on the same 64-byte Cache Line. They fight over the cache line, killing performance.
+*   **Padding/Alignment**: The CPU dislikes reading an integer from address `0x3` (unaligned). It wants `0x4`. The compiler inserts "Padding bytes" into structs to ensure this.
+    *   `struct { char c; int i; }` is NOT 5 bytes. It is 8 bytes (1 char + 3 padding + 4 int).
+
+

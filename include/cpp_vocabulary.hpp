@@ -158,4 +158,24 @@ void spaceshipDemo() {
 
 
 
+#endif // C++20
+
+// --- 6. Memory & Alignment ---
+
+struct BadAlign {
+    char c;   // 1 byte
+    // 3 bytes padding inserted here
+    int i;    // 4 bytes
+    char c2;  // 1 byte
+    // 3 bytes padding inserted here
+}; // Total: 12 bytes
+
+struct GoodAlign {
+    int i;    // 4 bytes
+    char c;   // 1 byte
+    char c2;  // 1 byte
+    // 2 bytes padding
+}; // Total: 8 bytes
+
 #endif // CPP_VOCABULARY_HPP
+

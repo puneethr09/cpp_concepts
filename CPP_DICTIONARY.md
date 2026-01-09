@@ -113,6 +113,11 @@ A comprehensive reference for C++ keywords, concepts, and idioms.
 *   **Technical**: Allows a function or class to access `private` and `protected` members of the declared class.
 *   **ELI5**: Giving your neighbor a key to your house. They can enter your `private` rooms.
 
+### `false sharing`
+*   **Technical**: Performance degradation when unrelated variables reside on the same Cache Line and are written to by different threads.
+*   **ELI5**: "Sharing a desk." You and I have different jobs, but we share one small desk (Cache Line). Every time I erase my paper, the desk shakes and you have to stop writing.
+
+
 ## I
 ### `inline`
 *   **Technical**: Hints to the compiler to substitute the body of the function into the call site.
