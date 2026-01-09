@@ -125,5 +125,37 @@ void bindingDemo() {
     (void)x; (void)y;
 }
 
+// --- 5. C++20 Features ---
+
+#if __cplusplus >= 202002L
+
+// Concepts: Constraining Templates
+template<typename T>
+concept Numeric = std::is_arithmetic_v<T>;
+
+template<Numeric T>
+T add(T a, T b) {
+    return a + b;
+}
+// output = add("Hello", "World"); // Compile Error: strings are not Numeric!
+
+// Three-way Comparison (Spaceship Operator)
+#include <compare>
+struct Version {
+    int major, minor;
+    auto operator<=>(const Version&) const = default;
+};
+
+void spaceshipDemo() {
+    Version v1{1, 0}, v2{1, 1};
+    // Automatically generates <, >, <=, >=, ==, !=
+    bool newer = v2 > v1;
+    (void)newer; // Suppress unused warning
+}
+
+
+#endif // C++20
+
+
 
 #endif // CPP_VOCABULARY_HPP
