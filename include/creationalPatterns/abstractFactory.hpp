@@ -10,6 +10,24 @@
 #include <memory>
 #include <string>
 
+// The Abstract Factory pattern is a creational design pattern that provides an interface for creating families of related or dependent objects
+// without specifying their concrete classes. It allows for the creation of objects that belong to a particular family, ensuring that the objects created are compatible with each other.
+// This pattern is useful when the system needs to be independent of how its objects are created, composed, and represented, and when the system needs to be configured with one of multiple families of products.
+
+// below example explained:
+//  CarFactory is the abstract factory interface with methods to create each component
+//  SUVFactory, SedanFactory, HatchbackFactory are concrete factories implementing the CarFactory interface to create specific components for each car type
+//  Engine, Wheels, Body are abstract product interfaces with concrete implementations for each car type
+//  CarProvider is a factory provider class with a static method to create the appropriate CarFactory based on the car type
+//  Example usage:
+//  auto suvFactory = CarProvider::createCarFactory("SUV");
+//  auto suvEngine = suvFactory->createEngine();
+//  suvEngine->display();
+//  Output: SUV Engine
+//  This demonstrates the Abstract Factory pattern by allowing the creation of related car components without specifying their concrete
+//  classes, ensuring compatibility among the components of the same car type.
+//  Note: Remember to include necessary headers and use appropriate namespaces in your actual implementation.
+//  This code is written in C++14 standard.
 class Engine
 {
 public:
