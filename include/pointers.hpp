@@ -15,21 +15,24 @@ public:
     uniquePtr() = delete;
 
     // Constructor to initialize the unique pointer with a pointer. This is the main constructor.
+    // Constructor: Takes ownership of the raw pointer.
     uniquePtr(T *p)
     {
         ptr = p;
     }
 
-    // Copy constructor is deleted, this is to ensure that the unique pointer is not copied, this is the main feature of unique pointer.
+    // Delete copy constructor to ensure unique ownership (cannot copy, must move).
     uniquePtr(const uniquePtr<T> &p) = delete;
 
     // Destructor to delete the pointer when the unique pointer goes out of scope.
+    // Destructor: Automatically releases the owned memory when the object goes out of scope.
     ~uniquePtr()
     {
         delete ptr;
     }
 
     // Overloading the -> operator to access the pointer. This is similar to the normal pointer.
+    // Arrow Operator: Allows accessing members of the underlying object like a raw pointer.
     T *operator->()
     {
         return ptr;
@@ -54,14 +57,17 @@ public:
     {
     }
 
+    // Constructor: initializes the pointer and creates a new reference count on the heap.
     shared_pointer(T *p)
     {
+        // Initialize reference count on the heap to track shared ownership.
         ptr = p;
         count = new int(1);
     }
 
     shared_pointer(const shared_pointer<T> &other)
     {
+        // Increment reference count when a new pointer shares ownership.
         ptr = other.ptr;
         count = other.count;
         (*count)++;
@@ -70,6 +76,7 @@ public:
     ~shared_pointer()
     {
         (*count)--;
+        // Decrement count; delete data only when count reaches zero (last owner).
         if ((*count) == 0)
         {
             delete ptr;
@@ -87,6 +94,7 @@ public:
         return ptr;
     }
 
+    // Helper to check the current reference count (for debugging/testing).
     int getCount() const
     {
         return *count;

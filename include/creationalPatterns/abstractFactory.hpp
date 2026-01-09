@@ -130,15 +130,20 @@ public:
     }
 };
 
+// Abstract Factory Interface: Declares methods to create all parts of the car family.
 class CarFactory
 {
 public:
     virtual std::unique_ptr<Engine> createEngine() = 0;
     virtual std::unique_ptr<Wheels> createWheels() = 0;
     virtual std::unique_ptr<Body> createBody() = 0;
+
     virtual ~CarFactory() = default;
 };
 
+// Abstract Factory interface ensures all created objects (Engine, Wheels, Body) belong to the same family.
+
+// Concrete Factory for SUV: Creates only SUV components.
 class SUVFactory : public CarFactory
 {
 public:
@@ -196,6 +201,7 @@ public:
     }
 };
 
+// Provider/Factory of Factories: Decides which Concrete Factory to instantiate (SUV, Sedan, or Hatchback).
 class CarProvider
 {
 public:

@@ -15,6 +15,7 @@ private:
     int cap;
 
 public:
+    // Default Constructor: Initializes an empty vector with capacity of 1.
     vectors()
     {
         arr = new T[1];
@@ -38,8 +39,10 @@ public:
         }
     }
 
+    // Push: Adds an element to the end. Resizes array if capacity is full.
     void push(T data)
     {
+        // Double capacity when full to ensure amortized O(1) insertion time.
         if (curr == cap)
         {
             cap *= 2;
@@ -55,6 +58,7 @@ public:
         curr++;
     }
 
+    // Pop: Removes the last element by decrementing the size counter (lazy deletion).
     void pop()
     {
         curr--;
@@ -126,15 +130,18 @@ public:
     }
 };
 
+// Insert a new value at the beginning of the list. Updates head pointer.
 void insertAtHead(node *&head, int n)
 {
     cout << "inserting value " << n << " at head" << endl;
+    // Insert at head is an O(1) operation involving simple pointer checks.
     // new node
     node *temp = new node(n);
     temp->setNext(head);
     head = temp;
 }
 
+// Traverse to the end of the list and append a new value. O(N) operation.
 void inserAtTail(node *&tail, int n)
 {
     cout << "inserting value " << n << " at tail" << endl;

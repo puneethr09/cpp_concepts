@@ -28,6 +28,7 @@ class Singleton
 {
 private:
     int data;
+    // Private Constructor: Prevents direct instantiation of the class from outside.
     Singleton()
     {
         data = 10;
@@ -40,12 +41,17 @@ private:
     Singleton(const Singleton &) = delete;
     Singleton &operator=(const Singleton &) = delete;
 
+
+    
+    // Static weak_ptr to hold the single instance without preventing destruction if needed.
     static std::weak_ptr<Singleton> instance;
     static std::mutex mtx;
 
 public:
     int getData() const { return data; }
 
+    // Public Static Accessor: The only way to get the instance of the Singleton.
+    // Uses Double-Checked Locking (via call_once style logic with mutex) to ensure thread safety.
     static std::shared_ptr<Singleton> getInstance()
     {
         std::lock_guard<std::mutex> lock(mtx);

@@ -70,10 +70,12 @@ public:
     }
 };
 
-// Step 3: Factory Class
+// Factory Class: Centralizes the creation logic.
 class DocumentFactory
 {
 public:
+    // Static factory method creates specific Document types (PDF, Word, Excel) based on valid string input.
+    // Returns a base pointer (unique_ptr<Document>) so client code is decoupled from concrete types.
     static std::unique_ptr<Document> createDocument(const std::string &type)
     {
         // convert type to upper case

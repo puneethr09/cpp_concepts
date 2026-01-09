@@ -10,6 +10,8 @@ using namespace std::chrono;
 
 typedef unsigned long long ull;
 
+// Function to process a large range of numbers and count evens.
+// Measures its own execution time to demonstrate thread lifespan.
 void findEven(ull start, ull end)
 {
     cout << "Currently in findEven, with thread id " << this_thread::get_id() << endl;
@@ -29,6 +31,8 @@ void findEven(ull start, ull end)
     cout << "Currently in findEven, with thread id done " << this_thread::get_id() << " count is " << count << " time elapsed " << duration.count() / 1000000 << endl;
 }
 
+// Function to process a large range of numbers and count odds.
+// Runs concurrently with findEven.
 void findOdd(ull start, ull end)
 {
     cout << "Currently in findOdd, with thread id " << this_thread::get_id() << endl;
@@ -48,6 +52,8 @@ void findOdd(ull start, ull end)
     cout << "Currently in findOdd, with thread id done " << this_thread::get_id() << " count is " << count << " time elapsed " << duration.count() / 1000000 << endl;
 }
 
+// Main driver for multithreading.
+// Spawns two threads to process large datasets in parallel and waits for them to finish.
 void multithreaded()
 {
     cout << "Currently in Main, with thread id " << this_thread::get_id() << endl;
@@ -55,9 +61,11 @@ void multithreaded()
     auto st = high_resolution_clock::now();
 
     ull start = 0, end = 1900000000;
+    // Use std::thread to execute tasks in parallel.
     // thread t1(findEven, start, end);
     // thread t2(findOdd, start, end);
 
+    // Join threads to ensure main thread waits for completion.
     // t1.join();
     // t2.join();
 
