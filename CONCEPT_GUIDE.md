@@ -4,6 +4,8 @@ This document is a comprehensive theoretical reference for every concept found i
 
 ---
 
+# Part I: Core Concepts
+
 ## 1. Smart Pointers: The End of Manual Memory Management
 
 ### The Core Problem: Who Owns This Memory?
@@ -36,8 +38,6 @@ A shared pointer allows multiple parts of your code to hold onto the same resour
     *   **Copying**: When you do `p2 = p1`, `p2` points to the same Control Block and increments the count. (1 -> 2).
     *   **Destruction**: When `p1` dies, it decrements the count (2 -> 1). It does *not* delete the data yet.
     *   **Final Destruction**: When `p2` dies, it decrements the count (1 -> 0). Seeing zero, it deletes the Data *and* the Control Block.
-
----
 
 ## 2. Standard Template Library (STL): Under the Hood
 
@@ -75,8 +75,6 @@ A shared pointer allows multiple parts of your code to hold onto the same resour
     *   In a balanced tree, looking up an item is **O(log N)**. For 1,000,000 items, you only need ~20 comparisons.
 *   **The `<` Operator**: The tree must know where to place items. "Is 'Apple' less than 'Banana'?" You must define how your custom objects are compared so the tree can sort them.
 
----
-
 ## 3. Concurrency: Parallelism & Thread Safety
 
 ### The Concept
@@ -101,44 +99,101 @@ Your CPU has multiple "Cores" (independent processing units). A standard program
 
 ---
 
-## 4. Design Patterns: Architectural Blueprints
+# Part II: Design Patterns
+
+Design patterns are standard architectural "recipes" for common coding problems. They separate "what you want to do" from "how exactly it is built".
+
+## A. Creational Patterns
+*Focus: How objects are created. Avoiding `new` operator mess.*
 
 ### 1. Singleton Pattern
 **Goal**: "One and only one."
 Ensure a class has only one instance and provide a global point of access to it.
-*   **The Code**:
-    *   **Private Constructor**: `Singleton() {}`. This forbids `Singleton s;` or `new Singleton();`.
-    *   **Static Instance**: The single instance is stored as a `static` member. Static members live for the life of the program and are shared by all objects of that class.
-    *   **Public Accessor**: `getInstance()` checks if the static instance is created. If not, it creates it. Then it returns it.
+*   **The Problem**: Some resources in your app must be shared. If you open 10 connections to a Database, you might crash the server. You want exactly *one* connection manager.
+*   **The Solution**: Make the constructor `private` so no one can say `new Singleton()`. Provide a `public static` method `getInstance()` that returns the *same* instance every time.
+*   **Thread Safety Warning**: In a multithreaded environment, two threads might call `getInstance()` at the exact same nanosecond and create two instances. We use a `std::mutex` to prevent this (Thread Safe Singleton).
+*   **Common Use Case**: Database Connection Pools, Loggers, or Configuration Managers (where you only want one source of truth).
 
 ### 2. Factory Pattern
 **Goal**: "Hiding complexity of creation."
 Objects might be complex to create (db connections, parsing logic). You don't want that mess in your main logic.
-*   **Mechanism**: A `static` method `create(type)` that takes a simple input ("PDF") and contains the big `if-else` block to decide which subclass (`PDFDocument`) to `new` up.
-*   **Benefit**: Open/Closed Principle (sort of). You centralize the change. If you add "TextDocument", you only modify the Factory, not every place the document is used.
+*   **The Problem**: Your main code asks for a "Document", but you have 20 types (PDF, Word, Excel). You don't want `if(type=="pdf") new PDF()` scattered everywhere.
+*   **The Solution**: A dedicated class `DocumentFactory`. The client just calls `DocumentFactory::create("pdf")` and gets a generic `Document*` back.
+*   **Benefit**: **Open/Closed Principle**. You can add "TextDocument" by just modifying the Factory. The client code ("main") doesn't change at all.
+*   **Common Use Case**: A document converter that creates `PDFParser`, `XMLParser`, or `JSONParser` objects based on the input file extension.
 
 ### 3. Abstract Factory Pattern
 **Goal**: "Families of objects."
-Sometimes objects come in sets. If you have a MacOS Button, you need a MacOS Scrollbar. You can't mix Linux Scrollbars with MacOS Buttons.
-*   **Mechanism**:
-    *   `UIFactory` (Abstract) -> `createButton()`, `createScrollbar()`.
-    *   `MacFactory` (Concrete) -> Implements `createButton` to return `MacButton`.
-    *   `LinuxFactory` (Concrete) -> Implements `createButton` to return `LinuxButton`.
-*   **Result**: The client just holds a `UIFactory*`. It doesn't know (or care) if it's running on Mac or Linux. It just asks for a button, and it gets the *correct* one for that system.
+Sometimes objects come in coordinated sets.
+*   **The Problem**: Imagine a UI toolkit. If you are on MacOS, you need MacOS Buttons, MacOS Windows, and MacOS Scrollbars. You cannot mix a Linux Button with a MacOS Window.
+*   **The Solution**: An interface of interfaces.
+    *   `UIFactory` (Abstract) says: "I create Buttons and Windows".
+    *   `MacFactory` (Concrete) says: "I create MacButton and MacWindow".
+    *   `LinuxFactory` (Concrete) says: "I create LinuxButton and LinuxWindow".
+*   **Result**: The client works with the abstract factory. It is guaranteed that all parts it receives will belong to the same family and be compatible.
+*   **Common Use Case**: Cross-platform GUI toolkits (Qt, wxWidgets) where the entire Look-and-Feel must match the OS theme.
 
 ### 4. Builder Pattern
 **Goal**: "Step-by-step construction."
-Some objects are massive configurations. `new Server(8080, true, false, "db", 500, ...)` is a nightmare.
-*   **Mechanism**: A helper class `ServerBuilder`.
-    *   Has methods like `setPort(8080)`, `enableSSL()`, `setDB("main")`.
-    *   Each method returns `*this` (a reference to the builder itself).
-    *   This allows **Method Chaining**: `builder.setPort(80).enableSSL().build()`.
-    *   The `build()` method finally calls the complex constructor with all the gathered flags.
+Some objects are massive configurations.
+*   **The Problem**: A "Server" object has 50 settings (Port, SSL, Timeout, DB, Cache...). A constructor like `new Server(80, true, 30, "db", false, ...)` is unreadable and error-prone (telescoping constructor antipattern).
+*   **The Solution**: A helper class `ServerBuilder`.
+    *   It has clear methods like `setPort(80)`, `enableSSL()`, `setTimeout(30)`.
+    *   Each method returns `*this`, allowing you to chain calls: `builder.setPort(80).enableSSL()`.
+    *   Finally, `build()` validates the config and creates the object.
+*   **Common Use Case**: Building complex SQL Queries (`select().from().where().orderBy()`) or constructing HTTP Requests with many headers.
 
 ### 5. Prototype Pattern
 **Goal**: "Cloning instead of Building."
-Sometimes creating a new object from scratch is expensive (database query, complex calculation). But you already have one in memory!
-*   **Mechanism**:
-    *   The object implements a `clone()` method.
-    *   `clone()` performs a **Deep Copy**: It creates a *new* object, but copies all the values from the current object into the new one.
-*   **Common Use Case**: Game Spawning. You load a "Goblin" model from disk (slow). To spawn 100 Goblins, you don't load from disk 100 times. You load one "Prototype Goblin", and then call `clone()` 99 times (fast memory copy).
+Sometimes creating a new object from scratch is expensive (database query, complex calculation).
+*   **The Problem**: You are making a game. Loading a "Goblin" model from the hard drive takes 200ms. You need to spawn 100 Goblins. Loading 100 times would take 20 seconds.
+*   **The Solution**: Load *one* Goblin into memory (the Prototype). To get more, just ask the Goblin to `clone()` itself. Cloning is just copying bytes in RAM, which takes nanoseconds.
+*   **Deep Copy vs Shallow Copy**: Crucial detail. If the Goblin holds a pointer to a sword, a shallow copy points to the *same* sword. A deep copy (what we want) creates a *new* sword for the *new* Goblin.
+*   **Common Use Case**: Game Spawning, or keeping a "History" state in an Undo/Redo system.
+
+## B. Structural Patterns
+*Focus: How objects are composed together.*
+
+### 6. Adapter Pattern
+**Goal**: "Round peg in a square hole."
+Make incompatible interfaces work together.
+*   **The Problem**: You have a `EuropeanSocket` class (requires 220V), but you just bought a `USASocket` (supplies 110V). You can't plug them in directly.
+*   **The Solution**: An `Adapter` class. It sits in the middle. It inherits from the interface you *need* (`EuropeanSocket`), but internally holds the object you *have* (`USASocket`). When you call `plugIn()` on the adapter, it calls `plugInUS()` on the internal object.
+*   **Real World**: Your laptop charger. It adapts wall AC voltage to the DC voltage your laptop needs.
+*   **Common Use Case**: Integrating a modern app with a legacy 3rd-party library. You wrap the old "clunky" interface with your clean new interface.
+
+### 7. Decorator Pattern
+**Goal**: "Adding toppings dynamically."
+Add features to an object *at runtime* without creating a million subclasses.
+*   **The Problem**: You have a `Coffee` class. You want `CoffeeWithMilk`. Then `CoffeeWithSugar`. Then `CoffeeWithMilkAndSugar`. If you use inheritance, you get a "Class Explosion" of every possible combination.
+*   **The Solution**: Composition over Inheritance.
+    *   `CoffeeDecorator` wraps a `Coffee`.
+    *   `MilkDecorator` wraps any `Coffee` (including another decorator!).
+    *   You "stack" them like Russian dolls: `Sugar(Milk(Coffee))`.
+    *   When you call `getCost()`, the Sugar adds $1 and calls the inner layer. The Milk adds $2 and calls the inner layer.
+*   **Common Use Case**: Java I/O Streams (`new BufferedReader(new FileReader(...))`) or UI window systems where you add "Borders", "Shadows", or "Scrollbars" to a basic Window.
+
+## C. Behavioral Patterns
+*Focus: How objects communicate.*
+
+### 8. Observer Pattern
+**Goal**: "Don't call us, we'll call you."
+Define a subscription mechanism to notify multiple objects about events.
+*   **The Problem**: You have a "YouTubeChannel" and "Users". When a video is uploaded, how do users know? You can't have users constantly asking `channel.hasNewVideo?` (Polling is inefficient).
+*   **The Solution**: Inversion of Control.
+    *   The **Subject** (Channel) keeps a list of subscribers.
+    *   The **Observer** (User) registers itself via `subscribe()`.
+    *   When an event happens, the Subject loops through the list and calls `update()` on everyone.
+*   **Memory Leak Warning**: If an observer dies but doesn't unsubscribe, the subject might crash trying to notify a dead object (Dangling Pointer).
+*   **Common Use Case**: MVC Architecture. When the Model (Data) changes, it notifies the View (UI) to redraw itself.
+
+### 9. Strategy Pattern
+**Goal**: "Swappable brains."
+Define a family of algorithms and make them interchangeable at runtime.
+*   **The Problem**: You have a `NavigationApp`. It needs to calculate routes.
+    *   User is driving -> Use `RoadStrategy`.
+    *   User is walking -> Use `WalkingStrategy`.
+    *   User is biking -> Use `BikeStrategy`.
+    *   You don't want one giant `if-else` within your map code.
+*   **The Solution**: Create an interface `RouteStrategy`. Pass the specific strategy object to the context. The context just calls `strategy->calculate()`. It doesn't care *how* it's done.
+*   **Common Use Case**: Payment Processing (CreditCard / PayPal), or Sorting Algorithms (using QuickSort for large data vs InsertionSort for small data).
