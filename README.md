@@ -65,6 +65,16 @@ Or run individual topics to focus your study:
 2.  Read the corresponding code in `include/pointers.hpp`.
 3.  Run the test `bazel test //tests:smart_pointers_test`.
 4.  Mark it as Done in **[INTERVIEW_PREP.md](INTERVIEW_PREP.md)**.
+
+### 4. Learning Mode: See the Output!
+By default, Bazel caches successful tests and hides output to save time. To force tests to re-run and **see your code's output** (print statements, steps), use these flags:
+
+```sh
+# --test_output=all      : Show stdout/stderr
+# --nocache_test_results : Force re-run even if code hasn't changed
+bazel test //tests:stl_test --test_output=all --nocache_test_results
+```
+
 5.  Use **[CPP_DICTIONARY.md](CPP_DICTIONARY.md)** to look up any confusing terms you encounter.
 
 ### 4. Advanced: Run Specific Test Component
