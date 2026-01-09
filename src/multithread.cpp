@@ -1,4 +1,4 @@
-#include "include/multithread.hpp"
+#include "multithread.hpp"
 #include <thread>
 #include <chrono>
 #include <iostream>
@@ -6,7 +6,7 @@
 
 using namespace std;
 using namespace std::chrono;
-//#define timeNow chrono::high_resolution_clock::now()
+// #define timeNow chrono::high_resolution_clock::now()
 
 typedef unsigned long long ull;
 
@@ -55,11 +55,11 @@ void multithreaded()
     auto st = high_resolution_clock::now();
 
     ull start = 0, end = 1900000000;
-    //thread t1(findEven, start, end);
-    //thread t2(findOdd, start, end);
+    // thread t1(findEven, start, end);
+    // thread t2(findOdd, start, end);
 
-    //t1.join();
-    //t2.join();
+    // t1.join();
+    // t2.join();
 
     findEven(start, end);
     findOdd(start, end);

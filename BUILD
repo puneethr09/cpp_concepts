@@ -5,15 +5,16 @@ cc_library(
         "src/log.cpp",
         "src/multithread.cpp",
     ],
-    hdrs = glob(["include/*.hpp", "include/**/*.hpp"]),    copts = [
+    hdrs = glob(["include/*.hpp", "include/**/*.hpp"]),
+    includes = ["include"],
+    copts = [
         "-Wall",
         "-std=c++14",
-        "-I.",  # Now the include folder (./include) is accessible.
     ],
 )
 
 cc_binary(
-    name = "output",
+    name = "cpp_concepts",
     srcs = ["src/main.cpp"],
     deps = [":mylib"],
     linkopts = [

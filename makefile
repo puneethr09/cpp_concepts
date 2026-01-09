@@ -1,11 +1,11 @@
 CXX = g++
-CXXFLAGS = -Wall -std=c++14 -Iincludes
+CXXFLAGS = -Wall -std=c++14 -Iinclude
 LDFLAGS = -lpthread
 
-all: output
+all: cpp_concepts
 
-output: main.o log.o multithread.o
-	$(CXX) $(CXXFLAGS) main.o log.o multithread.o $(LDFLAGS) -o output
+cpp_concepts: main.o log.o multithread.o
+	$(CXX) $(CXXFLAGS) main.o log.o multithread.o $(LDFLAGS) -o cpp_concepts
 
 main.o: src/main.cpp
 	$(CXX) $(CXXFLAGS) -c src/main.cpp
@@ -17,4 +17,4 @@ multithread.o: src/multithread.cpp
 	$(CXX) $(CXXFLAGS) -c src/multithread.cpp
 
 clean:
-	rm -f *.o output
+	rm -f *.o cpp_concepts
