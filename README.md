@@ -44,13 +44,21 @@ bazel build //...
 ```
 
 ### 2. Run Tests (Verify Your Knowledge)
-Run all 6 test suites to confirm the code works as expected.
+Run all test suites to confirm the code works as expected:
 ```sh
 bazel test //...
 ```
-*   `system_design_test`: Verifies LRU Cache & Thread Pool.
-*   `vocabulary_test`: Verifies language keywords.
-*   `patterns_test`: Verifies Design Patterns.
+
+Or run individual topics to focus your study:
+
+| Topic | Command | Content |
+| :--- | :--- | :--- |
+| **STL & Containers** | `bazel test //tests:stl_test` | Vector, List, Maps mechanics |
+| **Smart Pointers** | `bazel test //tests:smart_pointers_test` | Unique/Shared ptr implementation |
+| **Concurrency** | `bazel test //tests:concurrency_test` | Threads, Mutexes, Deadlocks |
+| **Design Patterns** | `bazel test //tests:patterns_test` | Singleton, Factory, Observer, etc. |
+| **System Design** | `bazel test //tests:system_design_test` | LRU Cache, Thread Pool |
+| **Vocabulary** | `bazel test //tests:vocabulary_test` | Keywords, Memory Alignment, C++20 |
 
 ### 3. Study Flow
 1.  Read a section in **[CONCEPT_GUIDE.md](CONCEPT_GUIDE.md)** (e.g., Smart Pointers).
@@ -58,6 +66,14 @@ bazel test //...
 3.  Run the test `bazel test //tests:smart_pointers_test`.
 4.  Mark it as Done in **[INTERVIEW_PREP.md](INTERVIEW_PREP.md)**.
 5.  Use **[CPP_DICTIONARY.md](CPP_DICTIONARY.md)** to look up any confusing terms you encounter.
+
+### 4. Advanced: Run Specific Test Component
+To run a *single* test case within a suite (e.g., just the `LRUCacheTest` inside `system_design_test`), use `--test_filter`:
+
+```sh
+# Format: bazel test //path:target --test_filter="TestSuiteName.TestCaseName"
+bazel test //tests:system_design_test --test_filter="LRUCacheTest.*"
+```
 
 ---
 **Good Luck!**
