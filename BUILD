@@ -1,15 +1,14 @@
-# filepath: /Users/puneeth/Documents/repo/repo_cpp_practice/BUILD
+package(default_visibility = ["//visibility:public"])
+
 cc_library(
     name = "mylib",
-    srcs = [
-        "src/log.cpp",
-        "src/multithread.cpp",
-    ],
-    hdrs = glob(["include/*.hpp", "include/**/*.hpp"]),
-    includes = ["include"],
+    srcs = glob(["src/*.cpp"], exclude = ["src/main.cpp"]),
+    hdrs = glob(["include/**/*.hpp"]),
+    strip_include_prefix = "include",
     copts = [
         "-Wall",
-        "-std=c++14",
+        "-Wextra",
+        "-std=c++20",
     ],
 )
 
@@ -17,6 +16,7 @@ cc_binary(
     name = "cpp_concepts",
     srcs = ["src/main.cpp"],
     deps = [":mylib"],
+    copts = ["-std=c++20"],
     linkopts = [
         "-lpthread",
     ],
