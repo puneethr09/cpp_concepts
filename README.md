@@ -82,6 +82,7 @@ To run a *single* test case within a suite (e.g., just the `LRUCacheTest` inside
 
 ```sh
 # Format: bazel test //path:target --test_filter="TestSuiteName.TestCaseName"
+# IMPORTANT: Always use quotes "" around the filter to prevent shell errors!
 bazel test //tests:system_design_test --test_filter="LRUCacheTest.*"
 ```
 
