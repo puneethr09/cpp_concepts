@@ -9,7 +9,7 @@ This document is a comprehensive theoretical reference for every concept found i
 ## 1. Smart Pointers: The End of Manual Memory Management
 
 ### The Core Problem: Who Owns This Memory?
-In C++, languages like Java or Python have a "Garbage Collector" that runs in the background and cleans up unused memory. C++ does not.
+Languages like Java or Python have a "Garbage Collector" that runs in the background and cleans up unused memory. C++ does not.
 If you say `int* x = new int(10);`, that integer lives on the **Heap**.
 *   **Stack Memory**: Automatic. Variables like `int a = 5;` inside a function die when the function ends.
 *   **Heap Memory**: Manual. `new int(10)` lives forever until you say `delete`.
