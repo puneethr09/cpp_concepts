@@ -7,41 +7,71 @@ template <typename T>
 class uniquePtr
 {
 private:
-    // Pointer to store the pointer passed to the unique pointer. This is made private to ensure that the pointer is not accessed directly.
+    // The raw heap pointer. This is trapped inside this Stack object.
+    // Made private so external code cannot accidentally 'delete' it or alias it.
     T *ptr;
 
 public:
-    // Default constructor is deleted, this is to ensure that the unique pointer is not created without a pointer.
+    // Default constructor is deleted to force the user to provide a valid heap pointer upon creation.
+    // Note: std::unique_ptr DOES allow default construction (initializing to nullptr), 
+    // but deleting it here guarantees we never have an empty wrapper.
     uniquePtr() = delete;
 
-    // Constructor to initialize the unique pointer with a pointer. This is the main constructor.
-    // Constructor: Takes ownership of the raw pointer.
+    // Constructor: Takes ownership of the raw heap pointer. 
+    // This is where the Stack wrapper securely grabs the Heap payload.
     uniquePtr(T *p)
     {
         ptr = p;
     }
 
-    // Delete copy constructor to ensure unique ownership (cannot copy, must move).
+    // ❌ COPY CONSTRUCTOR IS DELETED
+    // This physically prevents two uniquePtrs from wrapping the same raw pointer,
+    // guaranteeing single, exclusive ownership and preventing Double Free errors.
     uniquePtr(const uniquePtr<T> &p) = delete;
 
-    // Destructor to delete the pointer when the unique pointer goes out of scope.
-    // Destructor: Automatically releases the owned memory when the object goes out of scope.
+    // ❌ COPY ASSIGNMENT IS DELETED
+    // Just to be safe, we must also prevent p1 = p2
+    uniquePtr& operator=(const uniquePtr<T> &p) = delete;
+
+    // ✅ MOVE CONSTRUCTOR
+    // Safely transfers ownership from one stack wrapper to another.
+    // We steal the heap address, and leave the old wrapper empty (nullptr).
+    uniquePtr(uniquePtr<T>&& other) noexcept
+    {
+        ptr = other.ptr;     // Steal the memory address
+        other.ptr = nullptr; // Nullify the old one so its destructor doesn't double-free!
+    }
+
+    // ✅ MOVE ASSIGNMENT
+    // Same concept, but handling an assignment to an already-existing uniquePtr.
+    uniquePtr& operator=(uniquePtr<T>&& other) noexcept
+    {
+        if (this != &other) {
+            delete ptr;          // Free our current memory before taking new memory
+            ptr = other.ptr;     // Steal the new memory
+            other.ptr = nullptr; // Nullify the old owner
+        }
+        return *this;
+    }
+
+    // RAII in Action (Destructor): 
+    // When this uniquePtr stack variable goes out of scope, it automatically deletes the heap payload.
     ~uniquePtr()
     {
         delete ptr;
     }
 
-    // Overloading the -> operator to access the pointer. This is similar to the normal pointer.
-    // Arrow Operator: Allows accessing members of the underlying object like a raw pointer.
+    // Overloading the -> operator so we can interact with the wrapper exactly like a normal pointer.
     T *operator->()
     {
         return ptr;
     }
 
-    // Overloading the * operator to access the value of the pointer. This is similar to the normal pointer.
-    T *operator*()
+    // Overloading the * operator so we can dereference the pointer.
+    // returning T& instead of T*. Dereferencing a pointer should return a reference to the actual object!
+    T& operator*()
     {
-        return ptr;
+        return *ptr;
     }
 };
 
