@@ -15,6 +15,7 @@ If you say `int* x = new int(10);`, that integer lives on the **Heap**.
 *   **Heap Memory**: Manual. `new int(10)` lives forever until you say `delete`.
 
 **Smart Pointers** are wrappers that use C++'s Stack mechanics (Destructors) to manage Heap memory. This is called **RAII (Resource Acquisition Is Initialization)**.
+*   **Intuition:** Think of RAII as wrapping a heap allocation inside a stack object. When a heap resource is acquired, the wrapper managing it is initialized on the stack. Because stack variables are automatically destroyed when they go out of scope, the wrapper's destructor is inherently guaranteed to fire and automatically `delete` the resource.
 
 ### 1. Unique Pointer (`std::unique_ptr`)
 **Concept**: "There can be only one."
@@ -26,6 +27,7 @@ A unique pointer represents exclusive ownership. It guarantees that only one par
     *   **Deleted Copy Constructor**: This is the magic. `unique_ptr(const unique_ptr&) = delete;`.
         *   If you try `ptr2 = ptr1`, the compiler screams. Why? Because if both pointers pointed to the same memory, and both went out of scope, both would try to `delete` the same memory. This is a **Double Free Error** and causes crashes.
     *   **Move Semantics**: You can *transfer* ownership using `std::move(ptr1)`. This empties `ptr1` (sets it to nullptr) and moves the pointer to `ptr2`.
+    *   **Thread Safety**: By design, `unique_ptr` prevents side effects. Since only one thread can own the pointer at any time, transferring ownership to another thread via `std::move()` inherently proves that no two threads are sharing or mutating the underlying data simultaneously.
 
 ### 2. Shared Pointer (`std::shared_ptr`)
 **Concept**: "We all own this together."
@@ -38,6 +40,7 @@ A shared pointer allows multiple parts of your code to hold onto the same resour
     *   **Copying**: When you do `p2 = p1`, `p2` points to the same Control Block and increments the count. (1 -> 2).
     *   **Destruction**: When `p1` dies, it decrements the count (2 -> 1). It does *not* delete the data yet.
     *   **Final Destruction**: When `p2` dies, it decrements the count (1 -> 0). Seeing zero, it deletes the Data *and* the Control Block.
+    *   **Thread Safety Warning**: The Control Block (reference counter) is **thread-safe** (via atomic operations). **Atomic** means that modifying the counter happens as a single, indivisible hardware instruction. If two threads increment it at the exact same nanosecond, the CPU inherently sequences them safely without needing a slow software mutex. **However, the underlying data is NOT thread-safe for mutation.** If multiple threads are strictly *reading* the data, no mutex is needed. But if even **one** thread is modifying the shared data, you absolutely must synchronize access using a `std::mutex`.
 
 ## 2. Standard Template Library (STL): Under the Hood
 
