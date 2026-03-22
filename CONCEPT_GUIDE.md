@@ -64,6 +64,8 @@ A weak pointer is an **observer**. It points at the same Control Block as a `sha
 *   **Golden Rule**: Use `shared_ptr` when you **OWN** the resource. Use `weak_ptr` when you **OBSERVE** the resource.
 *   **Real-World Example**: In the chat server, if users hold `weak_ptr<ChatRoom>` instead of `shared_ptr`, an admin can delete the room by dropping the server's `shared_ptr`. The room is destroyed immediately. When a user tries to send a message, their `weak_ptr.lock()` returns `nullptr`, and they gracefully see "This room has been deleted!" instead of unknowingly keeping a zombie room alive in memory.
 
+> **💡 C++ vs Rust (Interview Tidbit):** RAII in C++ and Rust's Ownership model solve the same problem, but C++ makes it **opt-in** (you *can* still use raw `new`/`delete`, dangling pointers, and use-after-move — the compiler won't stop you). Rust makes it **mandatory at the compiler level** via its Borrow Checker — code with data races, use-after-free, or dangling pointers simply won't compile. C++ survives because of its massive legacy codebase, ecosystem maturity, and the flexibility to do unsafe tricks when performance demands it.
+
 ### 4. The Power Behind Modern C++: Move Semantics & Value Categories
 Move semantics are what make `unique_ptr` ownership (and fast STL containers) physically possible. 
 *   **L-Value (Locator Value)**: A named, persistent variable that has a definite memory address (e.g., `int x = 5;`). You can safely use it on the left side of an `=`. C++ prioritizes safety: if you pass an L-Value into a function, the compiler will *always* trigger the safe (but slow) Copy Constructor to guarantee your original variable isn't destroyed.
