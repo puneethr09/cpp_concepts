@@ -38,3 +38,18 @@ TEST(SmartPointerTest, SharedPtrAccess) {
     shared_pointer<pun> sp(new pun("access", 99));
     EXPECT_EQ(sp->getNum(), 99);
 }
+
+TEST(SmartPointerTest, UniquePtrMove) {
+    // Context: Verifies that our new Move Constructor and Move Assignment work correctly.
+    uniquePtr<pun> uptr1(new pun("moveTest", 100));
+    EXPECT_EQ(uptr1->getNum(), 100);
+
+    // 1. Test Move Constructor (stealing from uptr1 into uptr2)
+    uniquePtr<pun> uptr2(std::move(uptr1));
+    EXPECT_EQ(uptr2->getNum(), 100); 
+
+    // 2. Test Move Assignment (stealing from uptr2 into existing uptr3)
+    uniquePtr<pun> uptr3(new pun("temp", 200));
+    uptr3 = std::move(uptr2);
+    EXPECT_EQ(uptr3->getNum(), 100); 
+}
