@@ -79,7 +79,10 @@ template <typename T>
 class shared_pointer
 {
 private:
-    int *count;
+    // The Control Block: an atomic counter on the heap.
+    // Atomic ensures that increment/decrement from multiple threads is a single,
+    // indivisible hardware instruction — no mutex needed for the counter itself.
+    std::atomic<int> *count;
     T *ptr;
 
 public:
@@ -87,36 +90,38 @@ public:
     {
     }
 
-    // Constructor: initializes the pointer and creates a new reference count on the heap.
+    // Constructor: initializes the pointer and creates a new atomic reference count on the heap.
     shared_pointer(T *p)
     {
-        // Initialize reference count on the heap to track shared ownership.
         ptr = p;
-        count = new int(1);
+        count = new std::atomic<int>(1); // Born with 1 owner
     }
 
+    // Copy Constructor: A new shared_pointer shares ownership of the same data.
+    // Both pointers now look at the exact same atomic counter on the heap and increment it.
     shared_pointer(const shared_pointer<T> &other)
     {
-        // Increment reference count when a new pointer shares ownership.
         ptr = other.ptr;
         count = other.count;
-        (*count)++;
+        (*count)++; // Atomic increment — thread-safe!
     }
 
+    // Destructor: "Last one out turns off the lights."
+    // Atomically decrement the count. If we hit zero, we are the last owner.
     ~shared_pointer()
     {
-        (*count)--;
-        // Decrement count; delete data only when count reaches zero (last owner).
+        (*count)--; // Atomic decrement — thread-safe!
         if ((*count) == 0)
         {
-            delete ptr;
-            delete count;
+            delete ptr;   // Delete the actual data
+            delete count; // Delete the Control Block itself
         }
     }
 
-    T *operator*()
+    // Dereference operator: returns a reference to the underlying object.
+    T& operator*()
     {
-        return ptr;
+        return *ptr;
     }
 
     T *operator->()
@@ -127,7 +132,7 @@ public:
     // Helper to check the current reference count (for debugging/testing).
     int getCount() const
     {
-        return *count;
+        return count->load(); // Atomic read
     }
 };
 
