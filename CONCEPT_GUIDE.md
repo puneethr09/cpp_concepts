@@ -7,6 +7,7 @@ This document is a comprehensive theoretical reference for every concept found i
 # Part I: Core Concepts
 
 ## 1. Smart Pointers: The End of Manual Memory Management
+> 📂 **Code**: [include/pointers.hpp](include/pointers.hpp) | **Tests**: [tests/smart_pointers_test.cpp](tests/smart_pointers_test.cpp)
 
 ### The Core Problem: Who Owns This Memory?
 Languages like Java or Python have a "Garbage Collector" that runs in the background and cleans up unused memory. C++ does not.
@@ -18,6 +19,8 @@ If you say `int* x = new int(10);`, that integer lives on the **Heap**.
 *   **Intuition:** Think of RAII as wrapping a heap allocation inside a stack object. When a heap resource is acquired, the wrapper managing it is initialized on the stack. Because stack variables are automatically destroyed when they go out of scope, the wrapper's destructor is inherently guaranteed to fire and automatically `delete` the resource.
 
 ### 1. Unique Pointer (`std::unique_ptr`)
+> 🔗 See implementation: [uniquePtr class in pointers.hpp](include/pointers.hpp) | Test: `bazel test //tests:smart_pointers_test --test_filter="*UniquePtr*"`
+
 **Concept**: "There can be only one."
 A unique pointer represents exclusive ownership. It guarantees that only one part of your code owns the resource at any given time.
 
@@ -31,6 +34,8 @@ A unique pointer represents exclusive ownership. It guarantees that only one par
 *   **Real-World Example**: A database connection. Only one part of your application should hold a connection handle at a time. You open it, use it, and when that function ends, RAII automatically closes it. If another module needs it, you explicitly `std::move()` it over — making it crystal clear who is responsible for cleanup.
 
 ### 2. Shared Pointer (`std::shared_ptr`)
+> 🔗 See implementation: [shared_pointer class in pointers.hpp](include/pointers.hpp) | Test: `bazel test //tests:smart_pointers_test --test_filter="*SharedPtr*"`
+
 **Concept**: "We all own this together. Last one out turns off the lights."
 A shared pointer allows multiple parts of your code to hold onto the same resource. The resource is only destroyed when the *last* holder lets go.
 
